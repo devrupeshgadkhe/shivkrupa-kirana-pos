@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>शिवकृपा किराणा - रिअल-टाईम क्लाउड POS</title>
+    <title>शिवकृपा किराणा - GitHub JSON POS</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -12,15 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
-        
-        /* PERFECT 72MM THERMAL PRINT STYLES */
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; width: 72mm !important; }
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
         }
         .print-only { display: none; }
-
         .mic-active {
             animation: pulse-red 1.5s infinite;
             background-color: #ef4444 !important;
@@ -45,32 +42,61 @@
                 <div>
                     <h1 class="text-2xl font-black tracking-wide text-amber-400 flex items-center gap-2">
                         शिवकृपा किराणा
-                        <span class="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> क्लाउड सिंक चालू
+                        <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            GitHub JSON Storage
                         </span>
                     </h1>
                     <p class="text-xs text-slate-400">काउंटर १ (आयटम/व्हॉईस) ➔ काउंटर २ (भाव व प्रिंट)</p>
                 </div>
             </div>
 
-            <!-- TAB CONTROLS -->
-            <div class="flex items-center bg-slate-800 p-1.5 rounded-xl text-sm font-semibold border border-slate-700">
-                <button type="button" onclick="switchTab('counter1')" id="tab-c1" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all bg-orange-600 text-white font-bold shadow">
-                    <i class="fa-solid fa-keyboard"></i>
-                    <span>१. आयटम एंट्री (काउंटर १)</span>
-                </button>
-                <button type="button" onclick="switchTab('pending')" id="tab-pending" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold relative">
-                    <i class="fa-solid fa-hourglass-half text-amber-400"></i>
-                    <span>२. अपूर्ण बिल्स (काउंटर २)</span>
-                    <span id="pending-badge" class="bg-amber-500 text-slate-950 font-black text-xs px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
-                </button>
-                <button type="button" onclick="switchTab('history')" id="tab-history" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold">
-                    <i class="fa-solid fa-receipt text-emerald-400"></i>
-                    <span>३. पूर्ण बिल्स लेजर</span>
+            <!-- CONTROLS & SETTINGS -->
+            <div class="flex items-center gap-2">
+                <div class="flex items-center bg-slate-800 p-1.5 rounded-xl text-sm font-semibold border border-slate-700">
+                    <button type="button" onclick="switchTab('counter1')" id="tab-c1" class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all bg-orange-600 text-white font-bold shadow text-xs">
+                        <i class="fa-solid fa-keyboard"></i> काउंटर १
+                    </button>
+                    <button type="button" onclick="switchTab('pending')" id="tab-pending" class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold relative text-xs">
+                        <i class="fa-solid fa-hourglass-half text-amber-400"></i> अपूर्ण बिल <span id="pending-badge" class="bg-amber-500 text-slate-950 font-black text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+                    </button>
+                    <button type="button" onclick="switchTab('history')" id="tab-history" class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold text-xs">
+                        <i class="fa-solid fa-receipt text-emerald-400"></i> लेजर
+                    </button>
+                </div>
+                <button type="button" onclick="openSettings()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-xl text-xs font-bold border border-slate-700" title="GitHub Settings">
+                    <i class="fa-solid fa-gear text-base"></i>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 p-3 no-print">
+        <div class="bg-white rounded-2xl p-5 max-w-md w-full space-y-4 shadow-2xl">
+            <h3 class="text-lg font-black text-slate-900 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-key text-orange-600"></i> GitHub API सेटिंग्ज (Local Storage)
+            </h3>
+            <p class="text-xs text-slate-500">तुमचा डेटा थेट तुमच्या GitHub रिपॉझिटरीत JSON फाईल्स म्हणून सेव्ह करण्यासाठी माहिती प्रविष्ट करा. ही माहिती फक्त तुमच्या ब्राउझरमध्ये सेव्ह राहील.</p>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700">GitHub Username:</label>
+                    <input type="text" id="gh-user" placeholder="उदा. devrupeshgadkhe" class="w-full mt-1 p-2 border rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700">Repository Name:</label>
+                    <input type="text" id="gh-repo" placeholder="उदा. shivkrupa-kirana-pos" class="w-full mt-1 p-2 border rounded-lg font-mono">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700">Personal Access Token (PAT):</label>
+                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full mt-1 p-2 border rounded-lg font-mono">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="closeSettings()" class="px-4 py-2 bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">बंद करा</button>
+                <button type="button" onclick="saveSettings()" class="px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs">सेव्ह करा</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MAIN APP CONTAINER -->
     <main class="max-w-7xl mx-auto w-full px-3 md:px-6 py-4 flex-grow no-print">
@@ -81,8 +107,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-5">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-cart-plus text-orange-600"></i>
-                            आयटम व प्रमाण टाका (उदा. साखर 4 kg)
+                            <i class="fa-solid fa-cart-plus text-orange-600"></i> आयटम व प्रमाण टाका (उदा. साखर 4 kg)
                         </h2>
                     </div>
 
@@ -90,36 +115,34 @@
                         <div class="flex gap-2">
                             <div class="relative flex-grow">
                                 <input type="text" id="runtime-item-input" placeholder="उदा. साखर 4 kg, तेल 15L..." required autocomplete="off"
-                                    class="w-full pl-4 pr-10 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500 text-lg font-bold text-slate-900 placeholder-slate-400 outline-none shadow-inner">
+                                    class="w-full pl-4 pr-10 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500 text-lg font-bold text-slate-900 outline-none shadow-inner">
                                 <button type="button" onclick="clearInput()" class="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600">
                                     <i class="fa-solid fa-circle-xmark text-lg"></i>
                                 </button>
                             </div>
 
-                            <button type="button" id="mic-btn" onclick="toggleVoiceRecording()" title="माईक चालू/बंद करा"
-                                class="bg-slate-800 hover:bg-slate-900 text-white px-5 rounded-xl font-bold flex flex-col items-center justify-center transition active:scale-95 border border-slate-700 min-w-[70px]">
+                            <button type="button" id="mic-btn" onclick="toggleVoiceRecording()" title="माईक चालू करा"
+                                class="bg-slate-800 hover:bg-slate-900 text-white px-5 rounded-xl font-bold flex flex-col items-center justify-center transition border border-slate-700 min-w-[70px]">
                                 <i class="fa-solid fa-microphone text-xl" id="mic-icon"></i>
-                                <span class="text-[10px] uppercase font-black mt-0.5" id="mic-status-text">माईक</span>
+                                <span class="text-[10px] uppercase font-black mt-0.5">माईक</span>
                             </button>
 
-                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 active:scale-95 text-base">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>ॲड</span>
+                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 text-base">
+                                <i class="fa-solid fa-plus"></i> <span>ॲड</span>
                             </button>
                         </div>
                     </form>
 
                     <div id="voice-banner" class="hidden mt-3 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-xl text-xs flex items-center justify-between animate-pulse">
                         <span class="flex items-center gap-2 font-bold">
-                            <i class="fa-solid fa-microphone-lines text-red-600 text-base"></i>
-                            <span id="voice-transcript">मायक्रोफोन चालू आहे... बोला...</span>
+                            <i class="fa-solid fa-microphone-lines text-red-600 text-base"></i> ऐकत आहे... बोला...
                         </span>
                         <span class="bg-red-200 text-red-900 font-black px-2 py-0.5 rounded text-[10px]">RECORDING</span>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                         <i class="fa-solid fa-bolt text-amber-500"></i> फटाफट शॉर्टकट बटन्स
                     </h3>
                     <div class="flex flex-wrap gap-2" id="preset-container"></div>
@@ -135,8 +158,8 @@
                             <span id="c1-bill-no" class="text-sm font-mono font-bold bg-slate-800 px-2.5 py-0.5 rounded text-slate-300">SKK-----</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 pt-1">
-                            <input type="text" id="c1-cust-name" placeholder="ग्राहक नाव (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-orange-500">
-                            <input type="tel" id="c1-cust-phone" placeholder="मोबाईल क्र (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-orange-500">
+                            <input type="text" id="c1-cust-name" placeholder="ग्राहक नाव (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400">
+                            <input type="tel" id="c1-cust-phone" placeholder="मोबाईल क्र (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400">
                         </div>
                     </div>
 
@@ -159,13 +182,12 @@
 
                     <div class="bg-slate-50 border-t border-slate-200 p-4 space-y-3">
                         <div class="flex justify-between items-center text-sm font-bold text-slate-700">
-                            <span>एकूण वस्तू नग:</span>
-                            <span id="c1-item-count" class="text-base text-slate-900 font-mono">0</span>
+                            <span>एकूण वस्तू नग:</span> <span id="c1-item-count" class="text-base text-slate-900 font-mono">0</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <button type="button" onclick="clearDraftC1()" class="py-2.5 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs">सर्व रद्द करा</button>
-                            <button type="button" onclick="saveAsPendingBill()" class="py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs shadow flex items-center justify-center gap-1.5">
-                                <span>अपूर्ण बिल पाठवा ➔</span>
+                            <button type="button" onclick="saveAsPendingBillToGitHub()" class="py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs shadow flex items-center justify-center gap-1.5">
+                                <span>GitHub वर पाठवा ➔</span>
                             </button>
                         </div>
                     </div>
@@ -176,7 +198,12 @@
         <!-- VIEW 2: COUNTER 2 -->
         <div id="view-pending" class="hidden space-y-5">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h2 class="text-xl font-black text-slate-900 mb-4">अपूर्ण बिलांची यादी (Pending Bills)</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-black text-slate-900">अपूर्ण बिलांची यादी (GitHub Pending Bills)</h2>
+                    <button type="button" onclick="fetchPendingBillsFromGitHub()" class="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <i class="fa-solid fa-rotate"></i> रिफ्रेश करा
+                    </button>
+                </div>
                 <div id="pending-bills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 <div id="no-pending-msg" class="text-center py-16 text-slate-400">
                     <p class="text-base font-bold text-slate-700">एकही अपूर्ण बिल बाकी नाही!</p>
@@ -213,9 +240,8 @@
 
                     <div class="flex gap-2 w-full sm:w-auto">
                         <button type="button" onclick="closePendingEditor()" class="px-4 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">बंद करा</button>
-                        <button type="button" onclick="finalizeAndPrintPendingBill()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-print"></i>
-                            <span>सेव्ह करा व 72mm बिल प्रिंट करा</span>
+                        <button type="button" onclick="finalizeAndMoveToCompleted()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-print"></i> <span>सेव्ह करा व 72mm बिल प्रिंट करा</span>
                         </button>
                     </div>
                 </div>
@@ -226,7 +252,10 @@
         <div id="view-history" class="hidden space-y-4">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-black text-slate-800">पूर्ण झालेल्या बिलांचे लेजर</h2>
+                    <h2 class="text-xl font-black text-slate-800">पूर्ण झालेल्या बिलांचे लेजर (GitHub Completed)</h2>
+                    <button type="button" onclick="fetchCompletedBillsFromGitHub()" class="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <i class="fa-solid fa-rotate"></i> रिफ्रेश करा
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
@@ -247,24 +276,20 @@
 
     </main>
 
-    <!-- 72MM THERMAL PRINT TEMPLATE (PRINT ONLY) -->
+    <!-- 72MM THERMAL PRINT TEMPLATE -->
     <div id="print-receipt" class="print-only font-mono text-black p-2 mx-auto" style="width: 72mm; font-size: 11px; line-height: 1.2;">
         <div class="text-center border-b border-black pb-2 mb-2">
             <h1 style="font-size: 14px; font-weight: 900;" class="uppercase">शिवकृपा किराणा स्टोअर्स</h1>
             <p style="font-size: 10px; font-weight: bold;">वडनेर गंगाई, ता. दर्यापूर, जि. अमरावती</p>
             <p style="font-size: 10px;">मोबाईल: 9890959392</p>
         </div>
-
         <div style="font-size: 10px;" class="mb-2 pb-1 border-b border-dashed border-black space-y-0.5">
             <div class="flex justify-between font-bold">
                 <span>बिल क्र: <span id="p-bill-no">---</span></span>
                 <span id="p-date">--/--/----</span>
             </div>
-            <div id="p-cust-container">
-                <div>ग्राहक: <strong id="p-cust-name">---</strong></div>
-            </div>
+            <div>ग्राहक: <strong id="p-cust-name">---</strong></div>
         </div>
-
         <table style="width: 100%; font-size: 10px;" class="mb-2 border-b border-dashed border-black">
             <thead>
                 <tr class="border-b border-black font-bold">
@@ -275,151 +300,218 @@
             </thead>
             <tbody id="p-items-body"></tbody>
         </table>
-
         <div class="flex justify-between font-black" style="font-size: 12px; padding-top: 2px; border-top: 1px solid black;">
-            <span>एकूण देय रक्कम:</span>
-            <span>₹ <span id="p-grand-total">0.00</span></span>
+            <span>एकूण देय रक्कम:</span> <span>₹ <span id="p-grand-total">0.00</span></span>
         </div>
-
         <div class="text-center mt-3 pt-2 border-t border-dotted border-black" style="font-size: 10px;">
             <p style="font-weight: bold;">🪔 शुभ दीपावली! धन्यवाद! 🪔</p>
-            <p>पुन्हा भेट द्या.</p>
         </div>
     </div>
 
-    <!-- FIREBASE CLOUD DATABASE MODULE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForShivkrupaKiranaApp9890",
-            authDomain: "shivkrupa-kirana-pos.firebaseapp.com",
-            projectId: "shivkrupa-kirana-pos",
-            storageBucket: "shivkrupa-kirana-pos.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:123456:web:abcdef"
-        };
-
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch(e) {}
-
-        window.currentDraftItems = [];
-        window.pendingBills = [];
-        window.completedBills = [];
-        window.activeEditingBill = null;
-
-        async function initAuth() {
-            if(!auth) return;
-            try { await signInAnonymously(auth); } catch (err) {}
-        }
-
-        function setupRealtimeListeners() {
-            if(!db) return;
-            try {
-                const pendingColRef = collection(db, 'pending_bills');
-                onSnapshot(pendingColRef, (snapshot) => {
-                    window.pendingBills = [];
-                    snapshot.forEach(docSnap => {
-                        window.pendingBills.push(docSnap.data());
-                    });
-                    window.updatePendingBadgeCount();
-                    if(typeof window.renderPendingBills === 'function') {
-                        window.renderPendingBills();
-                    }
-                });
-            } catch(e){}
-        }
-
-        window.saveAsPendingBillToCloud = async function(newBill) {
-            if(db) {
-                try {
-                    await setDoc(doc(db, 'pending_bills', newBill.billNo), newBill);
-                } catch (e) {
-                    window.pendingBills.unshift(newBill);
-                }
-            } else {
-                window.pendingBills.unshift(newBill);
-            }
-            localStorage.setItem('skk_pending_bills', JSON.stringify(window.pendingBills));
-            window.updatePendingBadgeCount();
-        };
-
-        window.finalizePendingBillInCloud = async function(completedBill) {
-            if(db) {
-                try { await deleteDoc(doc(db, 'pending_bills', completedBill.billNo)); } catch(e){}
-            }
-            window.pendingBills = window.pendingBills.filter(b => b.billNo !== completedBill.billNo);
-            window.completedBills.unshift(completedBill);
-            localStorage.setItem('skk_pending_bills', JSON.stringify(window.pendingBills));
-            localStorage.setItem('skk_completed_bills', JSON.stringify(window.completedBills));
-            window.updatePendingBadgeCount();
-            if(typeof window.renderPendingBills === 'function') window.renderPendingBills();
-            if(typeof window.renderHistory === 'function') window.renderHistory();
-        };
-
-        initAuth().then(() => { setupRealtimeListeners(); });
-    </script>
-
-    <!-- APP LOGIC & FOCUS HANDLING -->
+    <!-- APP LOGIC & GITHUB API INTEGRATION -->
     <script>
+        var currentDraftItems = [];
+        var pendingBills = [];
+        var completedBills = [];
+        var activeEditingBill = null;
         var recognition = null;
         var isListening = false;
         var COMMON_PRESETS = ["साखर 5 kg", "गहू 10 kg", "तेल 15L", "रवा 2 kg", "मैदा 2 kg", "तांदूळ 5 kg", "मीठ 2 पुडी"];
 
         window.onload = function() {
-            loadLocalStorageFallback();
+            checkGitHubSettings();
             initSpeechRecognition();
             renderPresets();
             renderC1Draft();
-            var inputField = document.getElementById('runtime-item-input');
-            if(inputField) inputField.focus();
+            document.getElementById('runtime-item-input').focus();
         };
 
-        function loadLocalStorageFallback() {
-            try {
-                var p = localStorage.getItem('skk_pending_bills');
-                if(p && window.pendingBills.length === 0) window.pendingBills = JSON.parse(p);
-                var c = localStorage.getItem('skk_completed_bills');
-                if(c) window.completedBills = JSON.parse(c);
-            } catch(e) {}
-            window.updatePendingBadgeCount();
+        function getGitHubConfig() {
+            return {
+                user: localStorage.getItem('skk_gh_user') || '',
+                repo: localStorage.getItem('skk_gh_repo') || '',
+                token: localStorage.getItem('skk_gh_token') || ''
+            };
         }
 
-        window.updatePendingBadgeCount = function() {
-            var badge = document.getElementById('pending-badge');
-            if(badge) badge.innerText = window.pendingBills.length;
-        };
+        function openSettings() {
+            var cfg = getGitHubConfig();
+            document.getElementById('gh-user').value = cfg.user;
+            document.getElementById('gh-repo').value = cfg.repo;
+            document.getElementById('gh-token').value = cfg.token;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            var user = document.getElementById('gh-user').value.trim();
+            var repo = document.getElementById('gh-repo').value.trim();
+            var token = document.getElementById('gh-token').value.trim();
+            if(!user || !repo || !token) {
+                alert("कृपया सर्व माहिती भरा!");
+                return;
+            }
+            localStorage.setItem('skk_gh_user', user);
+            localStorage.setItem('skk_gh_repo', repo);
+            localStorage.setItem('skk_gh_token', token);
+            closeSettings();
+            alert("सेटिंग्ज यशस्वीरित्या सेव्ह झाली!");
+            fetchPendingBillsFromGitHub();
+        }
+
+        function checkGitHubSettings() {
+            var cfg = getGitHubConfig();
+            if(!cfg.user || !cfg.repo || !cfg.token) {
+                openSettings();
+            } else {
+                fetchPendingBillsFromGitHub();
+            }
+        }
+
+        // GitHub API: Save JSON File
+        async function saveJSONToGitHub(path, jsonData, commitMessage) {
+            var cfg = getGitHubConfig();
+            if(!cfg.user || !cfg.repo || !cfg.token) {
+                alert("कृपया पहिले GitHub सेटिंग्ज भरा!");
+                openSettings();
+                return false;
+            }
+
+            var url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${path}`;
+            var contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2))));
+
+            // Check if file already exists to get SHA
+            var sha = null;
+            try {
+                var getRes = await fetch(url, {
+                    headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" }
+                });
+                if(getRes.ok) {
+                    var fileData = await getRes.json();
+                    sha = fileData.sha;
+                }
+            } catch(e) {}
+
+            var bodyData = {
+                message: commitMessage,
+                content: contentEncoded
+            };
+            if(sha) bodyData.sha = sha;
+
+            var res = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${cfg.token}`,
+                    "Content-Type": "application/json",
+                    "Accept": "application/vnd.github.v3+json"
+                },
+                body: JSON.stringify(bodyData)
+            });
+
+            return res.ok;
+        }
+
+        // GitHub API: Delete JSON File
+        async function deleteJSONFromGitHub(path, commitMessage) {
+            var cfg = getGitHubConfig();
+            var url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${path}`;
+            try {
+                var getRes = await fetch(url, {
+                    headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" }
+                });
+                if(!getRes.ok) return false;
+                var fileData = await getRes.json();
+                
+                var res = await fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `token ${cfg.token}`,
+                        "Content-Type": "application/json",
+                        "Accept": "application/vnd.github.v3+json"
+                    },
+                    body: JSON.stringify({ message: commitMessage, sha: fileData.sha })
+                });
+                return res.ok;
+            } catch(e) {
+                return false;
+            }
+        }
+
+        // GitHub API: Get Directory Files
+        async function getDirectoryFilesFromGitHub(folderPath) {
+            var cfg = getGitHubConfig();
+            if(!cfg.user || !cfg.repo || !cfg.token) return [];
+            var url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${folderPath}`;
+            try {
+                var res = await fetch(url, {
+                    headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" }
+                });
+                if(!res.ok) return [];
+                var files = await res.json();
+                var list = [];
+                for(var f of files) {
+                    if(f.name.endsWith('.json')) {
+                        var fileRes = await fetch(f.download_url);
+                        if(fileRes.ok) {
+                            var jsonContent = await fileRes.json();
+                            list.push(jsonContent);
+                        }
+                    }
+                }
+                return list;
+            } catch(e) {
+                return [];
+            }
+        }
+
+        async function fetchPendingBillsFromGitHub() {
+            pendingBills = await getDirectoryFilesFromGitHub('bills/pending');
+            updatePendingBadgeCount();
+            if(!document.getElementById('view-pending').classList.contains('hidden')) {
+                renderPendingBills();
+            }
+        }
+
+        async function fetchCompletedBillsFromGitHub() {
+            completedBills = await getDirectoryFilesFromGitHub('bills/completed');
+            if(!document.getElementById('view-history').classList.contains('hidden')) {
+                renderHistory();
+            }
+        }
 
         function switchTab(tab) {
             document.getElementById('view-counter1').classList.add('hidden');
             document.getElementById('view-pending').classList.add('hidden');
             document.getElementById('view-history').classList.add('hidden');
 
-            document.getElementById('tab-c1').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-slate-300 font-bold";
-            document.getElementById('tab-pending').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-slate-300 font-bold relative";
-            document.getElementById('tab-history').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-slate-300 font-bold";
+            document.getElementById('tab-c1').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-300 font-bold text-xs";
+            document.getElementById('tab-pending').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-300 font-bold relative text-xs";
+            document.getElementById('tab-history').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-300 font-bold text-xs";
 
             if(tab === 'counter1') {
                 document.getElementById('view-counter1').classList.remove('hidden');
-                document.getElementById('tab-c1').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow";
+                document.getElementById('tab-c1').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow text-xs";
                 document.getElementById('runtime-item-input').focus();
             } else if(tab === 'pending') {
                 document.getElementById('view-pending').classList.remove('hidden');
-                document.getElementById('tab-pending').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow relative";
-                renderPendingBills();
+                document.getElementById('tab-pending').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow relative text-xs";
+                fetchPendingBillsFromGitHub();
             } else if(tab === 'history') {
                 document.getElementById('view-history').classList.remove('hidden');
-                document.getElementById('tab-history').className = "flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow";
-                renderHistory();
+                document.getElementById('tab-history').className = "flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-600 text-white font-bold shadow text-xs";
+                fetchCompletedBillsFromGitHub();
             }
         }
 
+        function updatePendingBadgeCount() {
+            var badge = document.getElementById('pending-badge');
+            if(badge) badge.innerText = pendingBills.length;
+        }
+
+        // Voice and Item handling
         function initSpeechRecognition() {
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
@@ -428,15 +520,14 @@
                 recognition.continuous = false;
                 recognition.interimResults = false;
                 recognition.lang = 'mr-IN';
-
                 recognition.onstart = function() {
                     isListening = true;
                     document.getElementById('mic-btn').classList.add('mic-active');
                     document.getElementById('voice-banner').classList.remove('hidden');
                 };
                 recognition.onresult = function(event) {
-                    var speechToText = event.results[0][0].transcript;
-                    if(speechToText) addSingleItemText(speechToText);
+                    var text = event.results[0][0].transcript;
+                    if(text) addSingleItemText(text);
                     stopVoiceRecording();
                 };
                 recognition.onerror = function() { stopVoiceRecording(); };
@@ -446,7 +537,7 @@
 
         function toggleVoiceRecording() {
             if (!recognition) {
-                var manualText = prompt("वस्तूचे नाव व प्रमाण टाका (उदा. साखर 4 kg):");
+                var manualText = prompt("वस्तूचे नाव व प्रमाण टाका:");
                 if(manualText) addSingleItemText(manualText);
                 return;
             }
@@ -454,13 +545,7 @@
                 try{ recognition.stop(); }catch(e){}
                 stopVoiceRecording();
             } else {
-                try { 
-                    recognition.start(); 
-                } catch(e) {
-                    var manualText = prompt("वस्तूचे नाव व प्रमाण टाका (उदा. साखर 4 kg):");
-                    if(manualText) addSingleItemText(manualText);
-                    stopVoiceRecording();
-                }
+                try { recognition.start(); } catch(e) { stopVoiceRecording(); }
             }
         }
 
@@ -474,7 +559,7 @@
         function renderPresets() {
             var container = document.getElementById('preset-container');
             container.innerHTML = COMMON_PRESETS.map(function(p) {
-                return '<button type="button" onclick="addSingleItemText(\'' + p + '\')" class="bg-slate-100 hover:bg-orange-50 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">+ ' + p + '</button>';
+                return `<button type="button" onclick="addSingleItemText('${p}')" class="bg-slate-100 hover:bg-orange-50 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">+ ${p}</button>`;
             }).join('');
         }
 
@@ -482,33 +567,29 @@
             if(e) e.preventDefault();
             var input = document.getElementById('runtime-item-input');
             var val = input.value.trim();
-            if(val) { 
-                addSingleItemText(val); 
-                input.value = ''; 
-            }
+            if(val) { addSingleItemText(val); input.value = ''; }
             input.focus();
         }
 
         function clearInput() { 
             var input = document.getElementById('runtime-item-input');
-            input.value = ''; 
-            input.focus();
+            input.value = ''; input.focus();
         }
 
         function addSingleItemText(text) {
-            window.currentDraftItems.push({ id: Date.now().toString(), text: text, rate: 0 });
+            currentDraftItems.push({ id: Date.now().toString(), text: text, rate: 0, total: 0 });
             renderC1Draft();
             document.getElementById('runtime-item-input').focus();
         }
 
         function removeDraftItem(id) {
-            window.currentDraftItems = window.currentDraftItems.filter(function(i) { return i.id !== id; });
+            currentDraftItems = currentDraftItems.filter(i => i.id !== id);
             renderC1Draft();
             document.getElementById('runtime-item-input').focus();
         }
 
         function clearDraftC1() {
-            window.currentDraftItems = [];
+            currentDraftItems = [];
             renderC1Draft();
             document.getElementById('runtime-item-input').focus();
         }
@@ -516,27 +597,27 @@
         function renderC1Draft() {
             var body = document.getElementById('c1-items-body');
             var emptyMsg = document.getElementById('c1-empty-msg');
-            document.getElementById('c1-item-count').innerText = window.currentDraftItems.length;
+            document.getElementById('c1-item-count').innerText = currentDraftItems.length;
 
-            if(window.currentDraftItems.length === 0) {
+            if(currentDraftItems.length === 0) {
                 body.innerHTML = '';
                 emptyMsg.classList.remove('hidden');
                 return;
             }
             emptyMsg.classList.add('hidden');
-            body.innerHTML = window.currentDraftItems.map(function(item, index) {
-                return '<tr>' +
-                    '<td class="py-2 px-2 font-bold text-slate-400">' + (index + 1) + '</td>' +
-                    '<td class="py-2 px-2 font-bold text-slate-800">' + item.text + '</td>' +
-                    '<td class="py-2 px-2 text-right">' +
-                        '<button type="button" onclick="removeDraftItem(\'' + item.id + '\')" class="text-red-500 px-2 py-1"><i class="fa-solid fa-trash-can"></i></button>' +
-                    '</td>' +
-                '</tr>';
-            }).join('');
+            body.innerHTML = currentDraftItems.map((item, index) => `
+                <tr>
+                    <td class="py-2 px-2 font-bold text-slate-400">${index + 1}</td>
+                    <td class="py-2 px-2 font-bold text-slate-800">${item.text}</td>
+                    <td class="py-2 px-2 text-right">
+                        <button type="button" onclick="removeDraftItem('${item.id}')" class="text-red-500 px-2 py-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function saveAsPendingBill() {
-            if(window.currentDraftItems.length === 0) {
+        async function saveAsPendingBillToGitHub() {
+            if(currentDraftItems.length === 0) {
                 alert("कृपया आधी यादीत आयटम जोडा!");
                 return;
             }
@@ -549,69 +630,70 @@
                 dateStr: new Date().toLocaleDateString('mr-IN'),
                 custName: custName,
                 custPhone: custPhone,
-                items: window.currentDraftItems
+                status: "pending",
+                items: currentDraftItems,
+                grandTotal: 0
             };
 
-            if(window.saveAsPendingBillToCloud) {
-                window.saveAsPendingBillToCloud(newBill);
+            var success = await saveJSONToGitHub(`bills/pending/${billNo}.json`, newBill, `Add pending bill ${billNo}`);
+            if(success) {
+                alert("बिल यशस्वीरित्या GitHub वर अपूर्ण (Pending) म्हणून सेव्ह झाले!");
+                currentDraftItems = [];
+                document.getElementById('c1-cust-name').value = '';
+                document.getElementById('c1-cust-phone').value = '';
+                renderC1Draft();
+                switchTab('pending');
             } else {
-                window.pendingBills.unshift(newBill);
-                localStorage.setItem('skk_pending_bills', JSON.stringify(window.pendingBills));
+                alert("GitHub वर सेव्ह करण्यात त्रुटी आली. टोकन तपासा.");
             }
-
-            window.currentDraftItems = [];
-            document.getElementById('c1-cust-name').value = '';
-            document.getElementById('c1-cust-phone').value = '';
-            renderC1Draft();
-            switchTab('pending');
         }
 
-        window.renderPendingBills = function() {
+        function renderPendingBills() {
             var grid = document.getElementById('pending-bills-grid');
             var noMsg = document.getElementById('no-pending-msg');
 
-            if(window.pendingBills.length === 0) {
+            if(pendingBills.length === 0) {
                 grid.innerHTML = '';
                 noMsg.classList.remove('hidden');
                 return;
             }
             noMsg.classList.add('hidden');
-            grid.innerHTML = window.pendingBills.map(function(b) {
-                return '<div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-sm">' +
-                    '<div class="flex justify-between items-start">' +
-                        '<div>' +
-                            '<span class="text-[10px] font-black bg-amber-200 text-amber-900 px-2 py-0.5 rounded">PENDING</span>' +
-                            '<h4 class="font-black text-slate-900 text-lg mt-1">' + b.billNo + '</h4>' +
-                            '<p class="text-xs text-slate-600 font-bold">ग्राहक: ' + b.custName + '</p>' +
-                        '</div>' +
-                        '<span class="text-xs text-slate-400 font-mono">' + b.dateStr + '</span>' +
-                    '</div>' +
-                    '<p class="text-xs text-slate-500 font-bold">आयटम नग: ' + b.items.length + '</p>' +
-                    '<button type="button" onclick="openPendingEditor(\'' + b.billNo + '\')" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-xl text-xs">' +
-                        'भाव भरा व प्रिंट काढा ➔' +
-                    '</button>' +
-                '</div>';
-            }).join('');
-        };
+            grid.innerHTML = pendingBills.map(b => `
+                <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-black bg-amber-200 text-amber-900 px-2 py-0.5 rounded">PENDING</span>
+                            <h4 class="font-black text-slate-900 text-lg mt-1">${b.billNo}</h4>
+                            <p class="text-xs text-slate-600 font-bold">ग्राहक: ${b.custName}</p>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">${b.dateStr}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-bold">आयटम नग: ${b.items.length}</p>
+                    <button type="button" onclick="openPendingEditor('${b.billNo}')" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-xl text-xs">
+                        भाव भरा व प्रिंट काढा ➔
+                    </button>
+                </div>
+            `).join('');
+        }
 
         function openPendingEditor(billNo) {
-            window.activeEditingBill = window.pendingBills.find(function(b) { return b.billNo === billNo; });
-            if(!window.activeEditingBill) return;
+            activeEditingBill = pendingBills.find(b => b.billNo === billNo);
+            if(!activeEditingBill) return;
 
-            document.getElementById('edit-bill-title').innerText = 'बिल क्र: ' + window.activeEditingBill.billNo;
-            document.getElementById('edit-bill-meta').innerText = 'ग्राहक: ' + window.activeEditingBill.custName + ' | दिनांक: ' + window.activeEditingBill.dateStr;
+            document.getElementById('edit-bill-title').innerText = `बिल क्र: ${activeEditingBill.billNo}`;
+            document.getElementById('edit-bill-meta').innerText = `ग्राहक: ${activeEditingBill.custName} | दिनांक: ${activeEditingBill.dateStr}`;
 
             var body = document.getElementById('edit-items-body');
-            body.innerHTML = window.activeEditingBill.items.map(function(item, idx) {
-                return '<tr class="border-b border-slate-100">' +
-                    '<td class="py-3 px-3 font-bold text-slate-800">' + item.text + '</td>' +
-                    '<td class="py-3 px-3 text-right">' +
-                        '<input type="number" id="rate-input-' + idx + '" value="' + (item.rate || '') + '" oninput="calculateEditGrandTotal()" placeholder="₹ दर"' +
-                            'class="w-28 text-right font-bold border border-slate-300 rounded-lg px-2 py-1 text-sm">' +
-                    '</td>' +
-                    '<td class="py-3 px-3 text-right font-bold text-slate-900" id="item-total-' + idx + '">₹0.00</td>' +
-                '</tr>';
-            }).join('');
+            body.innerHTML = activeEditingBill.items.map((item, idx) => `
+                <tr class="border-b border-slate-100">
+                    <td class="py-3 px-3 font-bold text-slate-800">${item.text}</td>
+                    <td class="py-3 px-3 text-right">
+                        <input type="number" id="rate-input-${idx}" value="${item.rate || ''}" oninput="calculateEditGrandTotal()" placeholder="₹ दर"
+                            class="w-28 text-right font-bold border border-slate-300 rounded-lg px-2 py-1 text-sm">
+                    </td>
+                    <td class="py-3 px-3 text-right font-bold text-slate-900" id="item-total-${idx}">₹0.00</td>
+                </tr>
+            `).join('');
 
             document.getElementById('active-pending-editor').classList.remove('hidden');
             calculateEditGrandTotal();
@@ -619,92 +701,97 @@
 
         function closePendingEditor() {
             document.getElementById('active-pending-editor').classList.add('hidden');
-            window.activeEditingBill = null;
+            activeEditingBill = null;
         }
 
         function calculateEditGrandTotal() {
-            if(!window.activeEditingBill) return;
+            if(!activeEditingBill) return;
             var grandTotal = 0;
-            window.activeEditingBill.items.forEach(function(item, idx) {
-                var input = document.getElementById('rate-input-' + idx);
+            activeEditingBill.items.forEach((item, idx) => {
+                var input = document.getElementById(`rate-input-${idx}`);
                 var r = input ? (parseFloat(input.value) || 0) : 0;
                 item.rate = r;
-                var itemTotal = document.getElementById('item-total-' + idx);
-                if(itemTotal) itemTotal.innerText = '₹ ' + r.toFixed(2);
+                item.total = r;
+                var itemTotal = document.getElementById(`item-total-${idx}`);
+                if(itemTotal) itemTotal.innerText = `₹ ${r.toFixed(2)}`;
                 grandTotal += r;
             });
             document.getElementById('edit-grand-total').innerText = grandTotal.toFixed(2);
-            window.activeEditingBill.grandTotal = grandTotal;
+            activeEditingBill.grandTotal = grandTotal;
         }
 
-        function finalizeAndPrintPendingBill() {
-            if(!window.activeEditingBill) return;
+        async function finalizeAndMoveToCompleted() {
+            if(!activeEditingBill) return;
             calculateEditGrandTotal();
 
-            document.getElementById('p-bill-no').innerText = window.activeEditingBill.billNo;
-            document.getElementById('p-date').innerText = window.activeEditingBill.dateStr;
-            document.getElementById('p-cust-name').innerText = window.activeEditingBill.custName || "सामान्य ग्राहक";
+            activeEditingBill.status = "completed";
 
-            var pBody = document.getElementById('p-items-body');
-            pBody.innerHTML = window.activeEditingBill.items.map(function(i) {
-                return '<tr>' +
-                    '<td class="py-1 text-left">' + i.text + '</td>' +
-                    '<td class="py-1 text-right">₹' + i.rate + '</td>' +
-                    '<td class="py-1 text-right font-bold">₹' + i.rate + '</td>' +
-                '</tr>';
-            }).join('');
-
-            document.getElementById('p-grand-total').innerText = window.activeEditingBill.grandTotal.toFixed(2);
-
-            if(window.finalizePendingBillInCloud) {
-                window.finalizePendingBillInCloud(window.activeEditingBill);
-            } else {
-                window.pendingBills = window.pendingBills.filter(function(b) { return b.billNo !== window.activeEditingBill.billNo; });
-                window.completedBills.unshift(window.activeEditingBill);
-                localStorage.setItem('skk_pending_bills', JSON.stringify(window.pendingBills));
-                localStorage.setItem('skk_completed_bills', JSON.stringify(window.completedBills));
+            // 1. Save to completed folder
+            var saved = await saveJSONToGitHub(`bills/completed/${activeEditingBill.billNo}.json`, activeEditingBill, `Complete bill ${activeEditingBill.billNo}`);
+            if(!saved) {
+                alert("बिल कम्प्लिट करताना एरर आली.");
+                return;
             }
+
+            // 2. Delete from pending folder
+            await deleteJSONFromGitHub(`bills/pending/${activeEditingBill.billNo}.json`, `Remove pending bill ${activeEditingBill.billNo}`);
+
+            // Print preparation
+            document.getElementById('p-bill-no').innerText = activeEditingBill.billNo;
+            document.getElementById('p-date').innerText = activeEditingBill.dateStr;
+            document.getElementById('p-cust-name').innerText = activeEditingBill.custName || "सामान्य ग्राहक";
+
+            document.getElementById('p-items-body').innerHTML = activeEditingBill.items.map(i => `
+                <tr>
+                    <td class="py-1 text-left">${i.text}</td>
+                    <td class="py-1 text-right">₹${i.rate}</td>
+                    <td class="py-1 text-right font-bold">₹${i.total}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('p-grand-total').innerText = activeEditingBill.grandTotal.toFixed(2);
 
             closePendingEditor();
             window.print();
+            fetchPendingBillsFromGitHub();
         }
 
-        window.renderHistory = function() {
+        function renderHistory() {
             var body = document.getElementById('history-table-body');
-            if(window.completedBills.length === 0) {
-                body.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-400">एकही पूर्ण बिल उपलब्ध नाही.</td></tr>';
+            if(completedBills.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">एकही पूर्ण बिल उपलब्ध नाही.</td></tr>`;
                 return;
             }
-            body.innerHTML = window.completedBills.map(function(b) {
-                return '<tr class="border-b border-slate-100">' +
-                    '<td class="py-3 px-3 font-mono font-bold text-orange-600">' + b.billNo + '</td>' +
-                    '<td class="py-3 px-3 text-xs text-slate-500">' + b.dateStr + '</td>' +
-                    '<td class="py-3 px-3 font-bold text-slate-800">' + (b.custName || 'सामान्य ग्राहक') + '</td>' +
-                    '<td class="py-3 px-3 text-right font-bold text-emerald-700">₹ ' + (b.grandTotal || 0).toFixed(2) + '</td>' +
-                    '<td class="py-3 px-3 text-center">' +
-                        '<button type="button" onclick="reprintHistoryBill(\'' + b.billNo + '\')" class="bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded text-xs">' +
-                            '<i class="fa-solid fa-print"></i>' +
-                        '</button>' +
-                    '</td>' +
-                '</tr>';
-            }).join('');
-        };
+            body.innerHTML = completedBills.map(b => `
+                <tr class="border-b border-slate-100">
+                    <td class="py-3 px-3 font-mono font-bold text-orange-600">${b.billNo}</td>
+                    <td class="py-3 px-3 text-xs text-slate-500">${b.dateStr}</td>
+                    <td class="py-3 px-3 font-bold text-slate-800">${b.custName || 'सामान्य ग्राहक'}</td>
+                    <td class="py-3 px-3 text-right font-bold text-emerald-700">₹ ${(b.grandTotal || 0).toFixed(2)}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="reprintHistoryBill('${b.billNo}')" class="bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded text-xs">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
         function reprintHistoryBill(billNo) {
-            var bill = window.completedBills.find(function(b) { return b.billNo === billNo; });
+            var bill = completedBills.find(b => b.billNo === billNo);
             if(!bill) return;
 
             document.getElementById('p-bill-no').innerText = bill.billNo;
             document.getElementById('p-date').innerText = bill.dateStr;
             document.getElementById('p-cust-name').innerText = bill.custName || "सामान्य ग्राहक";
 
-            document.getElementById('p-items-body').innerHTML = bill.items.map(function(i) {
-                return '<tr>' +
-                    '<td class="py-1 text-left">' + i.text + '</td>' +
-                    '<td class="py-1 text-right">₹' + i.rate + '</td>' +
-                    '<td class="py-1 text-right font-bold">₹' + i.rate + '</td>' +
-                '</tr>';
-            }).join('');
+            document.getElementById('p-items-body').innerHTML = bill.items.map(i => `
+                <tr>
+                    <td class="py-1 text-left">${i.text}</td>
+                    <td class="py-1 text-right">₹${i.rate}</td>
+                    <td class="py-1 text-right font-bold">₹${i.total}</td>
+                </tr>
+            `).join('');
 
             document.getElementById('p-grand-total').innerText = (bill.grandTotal || 0).toFixed(2);
             window.print();
