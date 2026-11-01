@@ -57,7 +57,7 @@
                         <i class="fa-solid fa-keyboard"></i> काउंटर १
                     </button>
                     <button type="button" onclick="switchTab('pending')" id="tab-pending" class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold relative text-xs">
-                        <i class="fa-solid fa-hourglass-half text-amber-400"></i> अपूर्ण बिल <span id="pending-badge" class="bg-amber-500 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded-full">0</span>
+                        <i class="fa-solid fa-hourglass-half text-amber-400"></i> अपूर्ण बिल <span id="pending-badge" class="bg-amber-500 text-slate-950 font-black text-[10px] px-1.5 py-0.2 rounded-full">0</span>
                     </button>
                     <button type="button" onclick="switchTab('history')" id="tab-history" class="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-slate-300 hover:text-white font-bold text-xs">
                         <i class="fa-solid fa-receipt text-emerald-400"></i> लेजर
@@ -76,7 +76,7 @@
             <h3 class="text-lg font-black text-slate-900 border-b pb-2 flex items-center gap-2">
                 <i class="fa-solid fa-key text-orange-600"></i> GitHub API सेटिंग्ज (Local Storage)
             </h3>
-            <p class="text-xs text-slate-500">तुमचा डेटा थेट तुमच्या GitHub रिपॉझिटरीत JSON फाईल्स म्हणून सेव्ह होईल.</p>
+            <p class="text-xs text-slate-500">तुमचा डेटा थेट तुमच्या GitHub रिपॉझिटरीत JSON फाईल्स म्हणून सेव्ह करण्यासाठी माहिती प्रविष्ट करा.</p>
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="font-bold text-slate-700">GitHub Username:</label>
@@ -127,7 +127,7 @@
                                 <span class="text-[10px] uppercase font-black mt-0.5">माईक</span>
                             </button>
 
-                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 text-sm">
+                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 text-base">
                                 <i class="fa-solid fa-plus"></i> <span>ॲड</span>
                             </button>
                         </div>
@@ -158,8 +158,8 @@
                             <span id="c1-bill-no" class="text-sm font-mono font-bold bg-slate-800 px-2.5 py-0.5 rounded text-slate-300">SKK-----</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 pt-1">
-                            <input type="text" id="c1-cust-name" placeholder="ग्राहक नाव (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-400 outline-none">
-                            <input type="tel" id="c1-cust-phone" placeholder="मोबाईल क्र (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-400 outline-none">
+                            <input type="text" id="c1-cust-name" placeholder="ग्राहक नाव (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400">
+                            <input type="tel" id="c1-cust-phone" placeholder="मोबाईल क्र (Optional)" autocomplete="off" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-400">
                         </div>
                     </div>
 
@@ -264,7 +264,6 @@
                                 <th class="py-3 px-3">बिल क्र</th>
                                 <th class="py-3 px-3">दिनांक</th>
                                 <th class="py-3 px-3">ग्राहक</th>
-                                <th class="py-3 px-3">आयटम</th>
                                 <th class="py-3 px-3 text-right">एकूण (₹)</th>
                                 <th class="py-3 px-3 text-center">प्रिंट</th>
                             </tr>
@@ -290,10 +289,6 @@
                 <span id="p-date">--/--/----</span>
             </div>
             <div>ग्राहक: <strong id="p-cust-name">---</strong></div>
-            <div class="flex justify-between font-bold">
-                <span>आयटम नग:</span>
-                <span id="p-item-count">0</span>
-            </div>
         </div>
         <table style="width: 100%; font-size: 10px;" class="mb-2 border-b border-dashed border-black">
             <thead>
@@ -322,11 +317,6 @@
         var recognition = null;
         var isListening = false;
         var COMMON_PRESETS = ["साखर 5 kg", "गहू 10 kg", "तेल 15L", "रवा 2 kg", "मैदा 2 kg", "तांदूळ 5 kg", "मीठ 2 पुडी"];
-
-        function getItemCount(items) {
-            if (!Array.isArray(items)) return 0;
-            return items.length;
-        }
 
         window.onload = function() {
             checkGitHubSettings();
@@ -381,7 +371,7 @@
             }
         }
 
-        // GitHub API: Save JSON File
+        // GitHub API: Save JSON File (Supports Multiple Independent Files)
         async function saveJSONToGitHub(path, jsonData, commitMessage) {
             var cfg = getGitHubConfig();
             if(!cfg.user || !cfg.repo || !cfg.token) {
@@ -393,7 +383,6 @@
             var url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${path}`;
             var contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2))));
 
-            // Check if file already exists to get SHA
             var sha = null;
             try {
                 var getRes = await fetch(url, {
@@ -450,21 +439,22 @@
             }
         }
 
-        // GitHub API: Get Directory Files
+        // GitHub API: Get Directory Files (Reads all JSON files independently)
         async function getDirectoryFilesFromGitHub(folderPath) {
             var cfg = getGitHubConfig();
             if(!cfg.user || !cfg.repo || !cfg.token) return [];
             var url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${folderPath}`;
             try {
                 var res = await fetch(url, {
-                    headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" }
+                    headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
+                    cache: "no-store" // Prevent browser caching of file lists
                 });
                 if(!res.ok) return [];
                 var files = await res.json();
                 var list = [];
                 for(var f of files) {
                     if(f.name.endsWith('.json')) {
-                        var fileRes = await fetch(f.download_url);
+                        var fileRes = await fetch(f.download_url + "?t=" + Date.now(), { cache: "no-store" });
                         if(fileRes.ok) {
                             var jsonContent = await fileRes.json();
                             list.push(jsonContent);
@@ -569,7 +559,7 @@
         function renderPresets() {
             var container = document.getElementById('preset-container');
             container.innerHTML = COMMON_PRESETS.map(function(p) {
-                return `<button type="button" onclick="addSingleItemText('${p}')" class="bg-slate-100 hover:bg-orange-50 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">${p}</button>`;
+                return `<button type="button" onclick="addSingleItemText('${p}')" class="bg-slate-100 hover:bg-orange-50 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">+ ${p}</button>`;
             }).join('');
         }
 
@@ -607,7 +597,7 @@
         function renderC1Draft() {
             var body = document.getElementById('c1-items-body');
             var emptyMsg = document.getElementById('c1-empty-msg');
-            document.getElementById('c1-item-count').innerText = getItemCount(currentDraftItems);
+            document.getElementById('c1-item-count').innerText = currentDraftItems.length;
 
             if(currentDraftItems.length === 0) {
                 body.innerHTML = '';
@@ -642,7 +632,6 @@
                 custPhone: custPhone,
                 status: "pending",
                 items: currentDraftItems,
-                itemCount: getItemCount(currentDraftItems),
                 grandTotal: 0
             };
 
@@ -679,7 +668,7 @@
                         </div>
                         <span class="text-xs text-slate-400 font-mono">${b.dateStr}</span>
                     </div>
-                    <p class="text-xs text-slate-500 font-bold">आयटम नग: ${getItemCount(b.items) || b.itemCount || 0}</p>
+                    <p class="text-xs text-slate-500 font-bold">आयटम नग: ${b.items.length}</p>
                     <button type="button" onclick="openPendingEditor('${b.billNo}')" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-xl text-xs">
                         भाव भरा व प्रिंट काढा ➔
                     </button>
@@ -690,10 +679,6 @@
         function openPendingEditor(billNo) {
             activeEditingBill = pendingBills.find(b => b.billNo === billNo);
             if(!activeEditingBill) return;
-
-            if (!activeEditingBill.itemCount) {
-                activeEditingBill.itemCount = getItemCount(activeEditingBill.items);
-            }
 
             document.getElementById('edit-bill-title').innerText = `बिल क्र: ${activeEditingBill.billNo}`;
             document.getElementById('edit-bill-meta').innerText = `ग्राहक: ${activeEditingBill.custName} | दिनांक: ${activeEditingBill.dateStr}`;
@@ -733,7 +718,6 @@
             });
             document.getElementById('edit-grand-total').innerText = grandTotal.toFixed(2);
             activeEditingBill.grandTotal = grandTotal;
-            activeEditingBill.itemCount = getItemCount(activeEditingBill.items);
         }
 
         async function finalizeAndMoveToCompleted() {
@@ -741,9 +725,8 @@
             calculateEditGrandTotal();
 
             activeEditingBill.status = "completed";
-            activeEditingBill.itemCount = getItemCount(activeEditingBill.items);
 
-            // 1. Save to completed folder
+            // 1. Save to completed folder as a separate unique JSON file
             var saved = await saveJSONToGitHub(`bills/completed/${activeEditingBill.billNo}.json`, activeEditingBill, `Complete bill ${activeEditingBill.billNo}`);
             if(!saved) {
                 alert("बिल कम्प्लिट करताना एरर आली.");
@@ -757,7 +740,6 @@
             document.getElementById('p-bill-no').innerText = activeEditingBill.billNo;
             document.getElementById('p-date').innerText = activeEditingBill.dateStr;
             document.getElementById('p-cust-name').innerText = activeEditingBill.custName || "सामान्य ग्राहक";
-            document.getElementById('p-item-count').innerText = activeEditingBill.itemCount || getItemCount(activeEditingBill.items);
 
             document.getElementById('p-items-body').innerHTML = activeEditingBill.items.map(i => `
                 <tr>
@@ -777,7 +759,7 @@
         function renderHistory() {
             var body = document.getElementById('history-table-body');
             if(completedBills.length === 0) {
-                body.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">एकही पूर्ण बिल उपलब्ध नाही.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">एकही पूर्ण बिल उपलब्ध नाही.</td></tr>`;
                 return;
             }
             body.innerHTML = completedBills.map(b => `
@@ -785,7 +767,6 @@
                     <td class="py-3 px-3 font-mono font-bold text-orange-600">${b.billNo}</td>
                     <td class="py-3 px-3 text-xs text-slate-500">${b.dateStr}</td>
                     <td class="py-3 px-3 font-bold text-slate-800">${b.custName || 'सामान्य ग्राहक'}</td>
-                    <td class="py-3 px-3 text-left font-bold text-slate-700">${b.itemCount || getItemCount(b.items)}</td>
                     <td class="py-3 px-3 text-right font-bold text-emerald-700">₹ ${(b.grandTotal || 0).toFixed(2)}</td>
                     <td class="py-3 px-3 text-center">
                         <button type="button" onclick="reprintHistoryBill('${b.billNo}')" class="bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded text-xs">
@@ -803,7 +784,6 @@
             document.getElementById('p-bill-no').innerText = bill.billNo;
             document.getElementById('p-date').innerText = bill.dateStr;
             document.getElementById('p-cust-name').innerText = bill.custName || "सामान्य ग्राहक";
-            document.getElementById('p-item-count').innerText = bill.itemCount || getItemCount(bill.items);
 
             document.getElementById('p-items-body').innerHTML = bill.items.map(i => `
                 <tr>
