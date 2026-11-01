@@ -1,0 +1,23 @@
+{
+  "billNo": "SKK-2026-8365",
+  "dateStr": "१/११/२०२६",
+  "custName": "सामान्य ग्राहक",
+  "custPhone": "",
+  "status": "completed",
+  "items": [
+    {
+      "id": "1793521245353",
+      "text": "पाच किलो तेल",
+      "rate": 777,
+      "total": 777
+    },
+    {
+      "id": "1793521250806",
+      "text": "आठ साबण होईल",
+      "rate": 225,
+      "total": 225
+    }
+  ],
+  "itemCount": 2,
+  "grandTotal": 1002
+}
