@@ -1,0 +1,23 @@
+{
+  "billNo": "SKK-2026-8185",
+  "dateStr": "१/११/२०२६",
+  "custName": "सामान्य ग्राहक",
+  "custPhone": "",
+  "status": "completed",
+  "items": [
+    {
+      "id": "1793521291774",
+      "text": "गहू गटाच्या",
+      "rate": 1,
+      "total": 1
+    },
+    {
+      "id": "1793521295246",
+      "text": "रवा कट्टा एक",
+      "rate": 4,
+      "total": 4
+    }
+  ],
+  "itemCount": 2,
+  "grandTotal": 5
+}
